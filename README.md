@@ -1,38 +1,50 @@
 # Bitkit
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bitkit`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
-## Installation
-
-Add this line to your application's Gemfile:
+Bitkit is a gem which **makes IRB more useful as a programmer's calculator**. Currently, the main
+feature is much greater control over Ruby's number formatting:
 
 ```ruby
-gem 'bitkit'
+require 'bitkit'
+puts 12 + 4 # => 16
+
+# Let's use hexadecimal instead!
+hex!
+puts 12 + 4 # => 0x10
+
+# If you're working with memory addresses, padding could be useful
+pad! 8
+puts 12 + 4 # => 0x00000010
+
+# Binary is supported too
+bin!
+puts 12 + 4 # => 0b00010000
+
+# You can also strip away the prefix if you like
+prefix! false
+puts 12 + 4 # => 00010000
 ```
 
-And then execute:
+Bitkit works by replacing the `#to_s` and `#inspect` implementation of integers, so it should work
+no matter how you're inspecting or logging numeric values.
 
-    $ bundle install
+As you can probably imagine, it can also cause problems for libraries which are relying on how
+numbers are converting to strings! But for just using IRB as a slightly more advanced calculator,
+like I often do while programming, you're unlikely to hit any major problems.
 
-Or install it yourself as:
+## Installation and Usage
 
-    $ gem install bitkit
+Install the gem with:
 
-## Usage
+```sh
+gem install bitkit
+```
 
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Then, you can either import it into a Ruby script or IRB. If you are using IRB, **you will run into 
+problems unless you pass `--nomultiline --nocolorize`!**
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/bitkit. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/bitkit/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/AaronC81/bitkit. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/AaronC81/bitkit/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +52,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Bitkit project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/bitkit/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Bitkit project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/AaronC81/bitkit/blob/main/CODE_OF_CONDUCT.md).
