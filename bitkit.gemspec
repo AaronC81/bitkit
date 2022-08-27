@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Aaron Christiansen"]
   spec.email         = ["aaronc20000@gmail.com"]
 
-  spec.summary       = "An IRB transformation into a programmer's calculator"
+  spec.summary       = "Transform IRB into a programmer's calculator"
   spec.homepage      = "http://github.com/AaronC81/bitkit"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.2.0"
