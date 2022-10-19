@@ -9,6 +9,21 @@ module Bitkit
     end
     reset
 
+    def self.represent(value, *a)
+      return value.__bitkit_real_to_s(*a) if a.length > 0
+
+      case base
+      when :dec
+        value.__bitkit_real_to_s
+      when :hex
+        "#{"0x" if prefix?}#{value.__bitkit_real_to_s(16).rjust(pad, '0')}"
+      when :bin
+        "#{"0b" if prefix?}#{value.__bitkit_real_to_s(2).rjust(pad, '0')}"
+      else
+        "(unknown base) #{value.__bitkit_real_to_s}"
+      end
+    end
+
     class << self
       attr_accessor :base, :pad
 
@@ -18,24 +33,36 @@ module Bitkit
   end
 end
 
-# TODO: might need to patch Bignum and Fixnum on older Rubies
-class Integer
-  alias __bitkit_real_to_s to_s
+# Older Rubies (<2.4) have separate Fixnum and Bignum classes which subclass Integer.
+# Newer Rubies (>=2.4) just use Integer, but include the old classes as aliases.
+# This causes a warning, so temporarily silence those.
+old_verbose = $VERBOSE
+$VERBOSE = nil
+uses_unified_integer = (Integer == Bignum)
+$VERBOSE = old_verbose
 
-  def to_s(*a)
-    return __bitkit_real_to_s(*a) if a.length > 0
-
-    repr = Bitkit::Representation
-    case repr.base
-    when :dec
-      __bitkit_real_to_s
-    when :hex
-      "#{"0x" if repr.prefix?}#{__bitkit_real_to_s(16).rjust(repr.pad, '0')}"
-    when :bin
-      "#{"0b" if repr.prefix?}#{__bitkit_real_to_s(2).rjust(repr.pad, '0')}"
-    else
-      "(unknown base) #{__bitkit_real_to_s}"
+if uses_unified_integer
+  class Integer
+    alias __bitkit_real_to_s to_s
+    def to_s(*a)
+      Bitkit::Representation.represent(self, *a)
     end
+    alias inspect to_s
   end
-  alias inspect to_s
+else
+  class Fixnum
+    alias __bitkit_real_to_s to_s
+    def to_s(*a)
+      Bitkit::Representation.represent(self, *a)
+    end
+    alias inspect to_s
+  end
+
+  class Bignum
+    alias __bitkit_real_to_s to_s
+    def to_s(*a)
+      Bitkit::Representation.represent(self, *a)
+    end
+    alias inspect to_s
+  end
 end
